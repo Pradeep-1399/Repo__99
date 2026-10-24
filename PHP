@@ -1,0 +1,23 @@
+<?php
+$users = [
+    ["id" => 1, "name" => "Alice", "role" => "admin"],
+    ["id" => 2, "name" => "Bob", "role" => "user"],
+    ["id" => 3, "name" => "Charlie", "role" => "user"]
+];
+
+$users[] = ["id" => 4, "name" => "David", "role" => "user"];
+
+$filtered = array_filter($users, function($user) {
+    return $user["role"] === "user";
+});
+
+$names = array_map(function($user) {
+    return $user["name"];
+}, $users);
+
+header("Content-Type: application/json");
+echo json_encode([
+    "total" => count($users),
+    "users" => array_values($filtered),
+    "names" => $names
+]);
