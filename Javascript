@@ -1,0 +1,26 @@
+const items = [
+    { id: 101, name: "laptop", price: 999 },
+    { id: 102, name: "mouse", price: 25 },
+    { id: 103, name: "monitor", price: 150 }
+];
+
+items.push({ id: 104, name: "keyboard", price: 45 });
+
+const expensiveItems = items.filter(item => item.price > 50);
+
+async function sendData() {
+    try {
+        const response = await fetch("http://127.0.0", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ items: items })
+        });
+        
+        const result = await response.json();
+        console.log(result);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+sendData();
