@@ -1,33 +1,23 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Dict, Any
+from typing import List
 
 app = FastAPI()
+class Task(BaseModel):
+    id: int
+    title: str
+    completed: bool = False
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+tasks_db = []
 
-class Payload(BaseModel):
-    items: List[Dict[str, Any]]
+@app.get("/tasks", response_model=List[Task])
+async def get_tasks():
+    return tasks_db
 
-@app.post("/process")
-async def process(payload: Payload):
-    data = payload.items
-    
-    for item in data:
-        if "name" in item:
-            item["name"] = item["name"].upper()
-            
-    return {
-        "count": len(data),
-        "processed_items": data
-    }
+@app.post("/tasks", response_model=Task)
+async def create_task(task: Task):
+    tasks_db.append(task)
+    return task
 
 if __name__ == "__main__":
     import uvicorn
